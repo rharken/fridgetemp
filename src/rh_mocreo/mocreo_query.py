@@ -1,30 +1,39 @@
-""" get_temp.py - get the temperatures from the mocreo hub for the refridgerator
+""" mocreo_query.py - get the temperatures from the mocreo hub for the refridgerator
 """
 import json
 import requests
 from bs4 import BeautifulSoup
 
+def process_labels(cfg: dict[str, object]) -> dict[str, str]:
+    """ Process Labels from a config dictionary
 
-def main():  # pylint: disable=too-many-locals
+    Args:
+        cfg (dict[str, object]): Configuration dictionary
+
+    Returns:
+        dict[str, str]: A dictionary containing the labels to use
+    """
+    labels = {}
+    if 'labels' in cfg:
+        lbl = cfg['labels']
+        for l in lbl: # pyright: ignore[reportUnknownVariableType, reportGeneralTypeIssues]
+            labels[l['sn']] = l['name']
+
+    return labels # pyright: ignore[reportUnknownVariableType]
+
+
+def mocreo_query(config: dict[str, object]) -> str:
     """ main code for getting temps from a mocreo hub
     """
-    # Get the config file information
-    with open('config.json', 'r', encoding='utf8') as j:
-        config = json.load(j)
-
     # Process lables
-    labels = {}
-    if 'labels' in config:
-        lbl = config['labels']
-        for l in lbl:
-            labels[l['sn']] = l['name']
+    labels = process_labels(config)
 
     # Set up a session
     s = requests.Session()
 
     # Build the login url and request data
     url = f"http://{config['mocreo_hub']}/login"
-    rdata = { "path": "/", "passwd": f"{config['password']}" }
+    rdata = {"path": "/", "passwd": f"{config['password']}"}
 
     # login to start the session
     req = s.post(url, rdata)
@@ -49,14 +58,12 @@ def main():  # pylint: disable=too-many-locals
             sn = serial_number[0].get_text().split()[-1]
             temp = temperature[0].get_text()
             if labels:
-                ret.append({'sn': sn, # pyright: ignore[reportUnknownMemberType]
+                ret.append({'sn': sn,  # pyright: ignore[reportUnknownMemberType]
                             'name': labels[sn],
                             'temp': temp})
             else:
-                ret.append({'sn': sn, # pyright: ignore[reportUnknownMemberType]
+                ret.append({'sn': sn,  # pyright: ignore[reportUnknownMemberType]
                             'temp': temp})
 
-        print(json.dumps(ret))
-
-if __name__ == "__main__":
-    main()
+        return json.dumps(ret)
+    return ""
