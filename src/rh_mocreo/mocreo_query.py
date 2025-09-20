@@ -39,12 +39,14 @@ def mocreo_query(config: dict[str, object]) -> str:
     req = s.post(url, rdata)
     if req.status_code != 200:
         print(f"ERROR authorizing: {req.status_code}")
+        return ""
 
     # now request the sensor page
     url = f"http://{config['mocreo_hub']}/sensors"
     req = s.get(url)
     if req.status_code != 200:
         print(f"ERROR in getting sensors: {req.status_code}")
+        return ""
 
     # parse the sensor page for the temperatures
     if req.text:
