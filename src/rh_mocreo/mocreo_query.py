@@ -57,7 +57,7 @@ def mocreo_query(config: dict[str, object]) -> str:
             temperature = c.select('.digits')
             sn = serial_number[0].get_text().split()[-1]
             temp = temperature[0].get_text()
-            if labels:
+            if labels and sn in labels:
                 ret.append({'sn': sn,  # pyright: ignore[reportUnknownMemberType]
                             'name': labels[sn],
                             'temp': temp})

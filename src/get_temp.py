@@ -4,11 +4,11 @@ import json
 import rh_mocreo.mocreo_query as rhm
 
 
-def main():  # pylint: disable=too-many-locals
+def main():
     """ main code for getting temps from a mocreo hub
     """
     # Get the config file information
-    with open('../config.json', 'r', encoding='utf8') as j:
+    with open('config.json', 'r', encoding='utf8') as j:
         config = json.load(j)
 
     print(rhm.mocreo_query(config)) # type: ignore
