@@ -12,6 +12,13 @@ def main():
     with open('config.json', 'r', encoding='utf8') as j:
         config = json.load(j)
 
+    # Process lables
+    labels = {}
+    if 'labels' in config:
+        lbl = config['labels']
+        for l in lbl:
+            labels[l['sn']] = l['name']
+
     # Set up a session
     s = requests.Session()
 
@@ -41,7 +48,10 @@ def main():
             temperature = c.select('.digits')
             sn = serial_number[0].get_text().split()[-1]
             temp = temperature[0].get_text()
-            ret.append({'sn': sn, 'temp': temp})
+            if labels:
+                ret.append({'sn': sn, 'name': labels[sn], 'temp': temp})
+            else:
+                ret.append({'sn': sn, 'temp': temp})
 
         print(json.dumps(ret))
 
