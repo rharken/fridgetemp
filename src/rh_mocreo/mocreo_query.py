@@ -1,5 +1,6 @@
-""" mocreo_query.py - get the temperatures from the mocreo hub for the refridgerator
+""" mocreo_query.py - get the temperatures from the mocreo hub for the refrigerator
 """
+from datetime import datetime
 import json
 import requests
 from bs4 import BeautifulSoup
@@ -42,6 +43,7 @@ def mocreo_query(config: dict[str, object]) -> str:
         return ""
 
     # now request the sensor page
+    curr_time = datetime.now()
     url = f"http://{config['mocreo_hub']}/sensors"
     req = s.get(url)
     if req.status_code != 200:
@@ -55,17 +57,22 @@ def mocreo_query(config: dict[str, object]) -> str:
         ret = []
         cards = soup.select('.card')
         for c in cards:
-            serial_number = c.select('.text-muted')
+            output = {}
+            serial = ""
+            serial_and_updated = c.select('.text-muted')
             temperature = c.select('.digits')
-            sn = serial_number[0].get_text().split()[-1]
-            temp = temperature[0].get_text()
-            if labels and sn in labels:
-                ret.append({'sn': sn,  # pyright: ignore[reportUnknownMemberType]
-                            'name': labels[sn],
-                            'temp': temp})
-            else:
-                ret.append({'sn': sn,  # pyright: ignore[reportUnknownMemberType]
-                            'temp': temp})
+            if len(serial_and_updated) > 0:
+                serial            = serial_and_updated[0].get_text().split()[-1]
+                output['sn']      = serial
+            if len(serial_and_updated) > 1:
+                output['updated'] = serial_and_updated[1].get_text()
+            if len(temperature) > 0:
+                output['temp']    = temperature[0].get_text()
+            if labels and serial in labels:
+                output['name']    = labels[serial]
+            output['current_time'] = curr_time.strftime("%Y-%m-%d %H:%M:%S")
+
+            ret.append(output) # pyright: ignore[reportUnknownMemberType]
 
         return json.dumps(ret)
     return ""
