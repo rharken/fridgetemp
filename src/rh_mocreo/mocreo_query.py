@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 def process_labels(cfg: dict[str, object]) -> dict[str, str]:
-    """ Process Labels from a config dictionary
+    """ Process Labels from a config dictionary (json)
 
     Args:
         cfg (dict[str, object]): Configuration dictionary
