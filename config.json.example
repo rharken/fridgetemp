@@ -1,0 +1,5 @@
+{
+    "mocreo_hub": "IP ADDRESS OF LOCAL MOCREO HUB",
+    "password": "PASSWORD FOR LOCAL MOCREO HUB",
+    "labels": [{ "sn": "SENSOR SERIAL NUMBER", "name": "Freezer" }, { "sn": "0000000000000000", "name": "Refrigerator" }]
+}

@@ -26,7 +26,7 @@ def main():
     url = f"http://{config['mocreo_hub']}/login"
     rdata = { "path": "/", "passwd": f"{config['password']}" }
 
-    # loging to start the session
+    # login to start the session
     req = s.post(url, rdata)
     if req.status_code != 200:
         print(f"ERROR authorizing: {req.status_code}")
