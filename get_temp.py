@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def main():
+def main():  # pylint: disable=too-many-locals
     """ main code for getting temps from a mocreo hub
     """
     # Get the config file information
@@ -49,9 +49,12 @@ def main():
             sn = serial_number[0].get_text().split()[-1]
             temp = temperature[0].get_text()
             if labels:
-                ret.append({'sn': sn, 'name': labels[sn], 'temp': temp})
+                ret.append({'sn': sn, # pyright: ignore[reportUnknownMemberType]
+                            'name': labels[sn],
+                            'temp': temp})
             else:
-                ret.append({'sn': sn, 'temp': temp})
+                ret.append({'sn': sn, # pyright: ignore[reportUnknownMemberType]
+                            'temp': temp})
 
         print(json.dumps(ret))
 
