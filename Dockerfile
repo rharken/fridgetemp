@@ -4,7 +4,7 @@ FROM alpine:${IMG_VER}
 EXPOSE ${WEB_PORT}
 WORKDIR /usr/src/app
 ADD src/rh_mocreo/ rh_mocreo/
-ADD src/get_temp_api.py src/config.json requirements.txt .
+ADD src/get_temp_api.py src/config.json requirements.txt ./
 RUN adduser uwsgi -D && \
     apk add --no-cache \
         python3 \
